@@ -10,11 +10,13 @@ public class DownloadStatusEventArgs : EventArgs
     public double bytesDownloaded { get; set; }
     public double Percentage { get; set; }
 }
+
 class FileDownloader
 {
     private const string ProgressFileName = "download_progress.txt"; // İndirme durumu dosyası
-    private const string UrlFileName = "download_url.txt"; // İndirme URL'sini saklamak için dosya
+    public const string UrlFileName = "download_url.txt"; // İndirme URL'sini saklamak için dosya
     public event EventHandler<DownloadStatusEventArgs> onDownloadStatus;
+
     public async Task DownloadFileAsync(string url, string destinationPath)
     {
         using (HttpClient httpClient = new HttpClient())
@@ -85,7 +87,6 @@ class FileDownloader
 
                         // İlerleme yüzdesini hesapla ve göster
                         var progressPercentage = (double)totalReadBytes / totalBytes * 100;
-                        //Console.WriteLine($"İlerleme: {progressPercentage:F2}%");
                         onDownloadStatus?.Invoke(this, new DownloadStatusEventArgs
                         {
                             bytesDownloaded = totalReadBytes,
@@ -117,3 +118,4 @@ class FileDownloader
         return Regex.Replace(fileName, @"[<>:""/\\|?*]", "_");
     }
 }
+

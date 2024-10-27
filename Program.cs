@@ -1,15 +1,21 @@
-﻿
-//Örnek url=http://newmanager.smg.com.tr/files/00011f99-63e2-4515-8b8f-d7d4d0a69437.mp3
-class Program
+﻿class Program
 {
     static async Task Main(string[] args)
     {
         string url;
 
         // Daha önce kaydedilmiş URL'yi oku
-
-        Console.WriteLine("İndirmek istediğiniz dosyanın URL'sini girin:");
-        url = Console.ReadLine(); // Kullanıcıdan URL al
+        if (File.Exists(FileDownloader.UrlFileName))
+        {
+            url = File.ReadAllText(FileDownloader.UrlFileName); // URL'yi dosyadan oku
+            Console.WriteLine($"Devam eden indirme için URL: {url}");
+        }
+        else
+        {
+            Console.WriteLine("İndirmek istediğiniz dosyanın URL'sini girin:");
+            url = Console.ReadLine(); // Kullanıcıdan URL al
+            File.WriteAllText(FileDownloader.UrlFileName, url); // URL'yi kaydet
+        }
 
         // Kullanıcının Downloads klasörünü al
         string downloadsFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads";
@@ -24,6 +30,6 @@ class Program
 
     private static void indirmeDurumu(object? sender, DownloadStatusEventArgs e)
     {
-        Console.WriteLine($"yüzde {e.Percentage}");
+        Console.WriteLine($"Yüzde: {e.Percentage:F2}% - İndirilen: {e.bytesDownloaded / 1024.0:F2} KB / Toplam: {e.totalBytes / 1024.0:F2} KB");
     }
 }
